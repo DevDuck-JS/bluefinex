@@ -4,6 +4,7 @@ import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 
+import { TransactionContext } from "../context/TransactionsContext";
 import { Loader } from "./";
 
 const commonStyles =
@@ -21,9 +22,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-  const connectWallet = () => {
-    // Declare logic here
-  };
+  const { connectWallet, currentAccount } = useContext(TransactionContext);
 
   const handleSubmit = () => {};
 
@@ -40,14 +39,18 @@ const Welcome = () => {
           </p>
 
           {/* Connect Wallet Button */}
-          <button
-            type="button"
-            onClick={connectWallet}
-            className="flex flex-row justify-center items-center my-5 bg-[#2952E3] p-3 rounded-full cursor-pointer hover:bg-[#2546BD] w-full"
-          >
-            <AiFillPlayCircle className="text-white mr-2" />
-            <p className="text-white text-base font-semibold">Connect Wallet</p>
-          </button>
+          {!currentAccount && (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center my-5 bg-[#2952E3] p-3 rounded-full cursor-pointer hover:bg-[#2546BD] w-full"
+            >
+              <AiFillPlayCircle className="text-white mr-2" />
+              <p className="text-white text-base font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          )}
 
           {/* Grids */}
           <div className="grid sm:grid-cols-3 grids-col-2 w-full mt-10">
