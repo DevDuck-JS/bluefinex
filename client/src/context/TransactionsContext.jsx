@@ -7,16 +7,18 @@ export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
 
-const getEthereumContract = () => {
+const getEthereumContract = async () => {
   const provider = new ethers.BrowserProvider(ethereum);
-  const signer = provider.getSigner();
-  const transactionContract = new ethers.Contract(
+  const signer = await provider.getSigner();
+  const transactionsContract = new ethers.Contract(
     contractAddress,
     contractABI,
     signer
   );
 
-  console.log({ provider, signer, transactionContract });
+  console.log({ provider, signer, transactionsContract });
+
+  return transactionsContract;
 };
 
 export const TransactionProvider = ({ children }) => {
@@ -27,6 +29,10 @@ export const TransactionProvider = ({ children }) => {
     keyword: "",
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [transactionCount, setTransactionCount] = useState(
+    localStorage.getItem("transactionCount")
+  );
 
   const handleChange = (e, name) => {
     setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
@@ -73,7 +79,38 @@ export const TransactionProvider = ({ children }) => {
 
       // Get the data from the form
       const { addressTo, amount, keyword, message } = formData;
-      getEthereumContract();
+      const transactionsContract = await getEthereumContract();
+      const parsedAmount = ethers.parseEther(amount);
+
+      await ethereum.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from: currentAccount,
+            to: addressTo,
+            gas: "0x5208", // 21,000 GWEI
+            value: parsedAmount.toString(16), // eth converted to GWEI
+          },
+        ],
+      });
+
+      const transactionHash = await transactionsContract.addToBlockchain(
+        addressTo,
+        parsedAmount,
+        message,
+        keyword
+      );
+
+      setIsLoading(true);
+      console.log(`Loading - ${transactionHash.hash}`);
+      await transactionHash.wait();
+
+      setIsLoading(false);
+      console.log(`Success - ${transactionHash.hash}`);
+
+      const transactionCount = await transactionsContract.GetTransactionCount();
+
+      setTransactionCount(Number(transactionCount));
     } catch (error) {
       console.log(error);
       throw new Error("No etheruem object.");
