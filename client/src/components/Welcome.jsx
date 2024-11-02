@@ -7,6 +7,8 @@ import { BsInfoCircle } from "react-icons/bs";
 import { TransactionContext } from "../context/TransactionsContext";
 import { Loader } from "./";
 
+import { shortenAddress } from "../utils/shortenAddress";
+
 const commonStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 
@@ -69,7 +71,6 @@ const Welcome = () => {
           {/* Grids */}
           <div className="grid sm:grid-cols-3 grids-col-2 w-full mt-10">
             <div className={`rounded-tl-2xl ${commonStyles}`}>Reliability</div>
-
             <div className={commonStyles}>Security</div>
             <div className={`sm:rounded-tr-2xl ${commonStyles}`}>Ethereum</div>
             <div className={`sm:rounded-bl-2xl ${commonStyles}`}>Web 3.0</div>
@@ -94,7 +95,7 @@ const Welcome = () => {
               {/* Address & Network */}
               <div>
                 <p className="text-white font-light text-sm">
-                  0xjdjdjks...jsd45jflKds78
+                  {shortenAddress(currentAccount)}
                 </p>
                 <p className="text-white font-semibold text-lg mt-1">
                   Ethereum
