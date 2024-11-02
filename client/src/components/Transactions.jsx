@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
-
 import { TransactionContext } from "../context/TransactionsContext";
-
-import dummyData from "../utils/dummyData";
+// import dummyData from "../utils/dummyData";
 import { shortenAddress } from "../utils/shortenAddress";
 import useFetch from "../hook/useFetch";
 
@@ -55,11 +53,11 @@ const TransactionCard = ({
             </>
           )}
 
-          <img
+          {/* <img
             src={gifUrl || url}
             alt="gif"
             className="w-full h-64 2x:h-96 rounded-md shadow-lg object-cover"
-          />
+          /> */}
 
           <div className="bg-black p-3 px-5 w-max rounde-3xml mt-5 shadow-2xl">
             <p className="text-[#37c7da] font-bold">{timestamp}</p>
@@ -71,7 +69,7 @@ const TransactionCard = ({
 };
 
 const Transactions = () => {
-  const { currentAccount } = useContext(TransactionContext);
+  const { currentAccount, transactions } = useContext(TransactionContext);
 
   return (
     <div className="flex w-ful justify-center items-center 2xl:px-20 gradient-bg-transactions">
@@ -86,7 +84,7 @@ const Transactions = () => {
           </h3>
         )}
         <div className="flex flex-wrap justify-center items-center mb-10">
-          {dummyData.reverse().map((transaction, i) => (
+          {transactions.reverse().map((transaction, i) => (
             <TransactionCard key={i} {...transaction} />
           ))}
         </div>

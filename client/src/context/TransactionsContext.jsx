@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { ethers, formatUnits } from "ethers";
 
 import { contractABI, contractAddress } from "../utils/constants";
 
@@ -56,9 +56,10 @@ export const TransactionProvider = ({ children }) => {
 
           message: transaction.message,
           keyword: transaction.keyword,
-          amount: parseInt(transaction.amount._hex) / 10 ** 18,
+          amount: formatUnits(transaction.amount, 18),
         })
       );
+      setTransactions(structuredTransactions);
       console.log(structuredTransactions);
     } catch (error) {
       console.log(error);
@@ -151,6 +152,8 @@ export const TransactionProvider = ({ children }) => {
       const transactionCount = await transactionsContract.GetTransactionCount();
 
       setTransactionCount(Number(transactionCount));
+
+      window.reload();
     } catch (error) {
       console.log(error);
       throw new Error("No etheruem object.");
@@ -171,6 +174,8 @@ export const TransactionProvider = ({ children }) => {
         setFormData,
         handleChange,
         sendTransaction,
+        transactions,
+        isLoading,
       }}
     >
       {children}
